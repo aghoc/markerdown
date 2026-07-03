@@ -1,6 +1,7 @@
 import io
 import os
 import sys
+from pathlib import Path
 from types import SimpleNamespace
 
 from PIL import Image
@@ -11,6 +12,8 @@ from markitdown.converters._marker_pdf_converter import (
     _configure_marker_torch_device,
     _select_marker_torch_device,
 )
+
+TEST_FILES_DIR = Path(__file__).parent / "test_files"
 
 
 class FakeMarkerPdfConverter:
@@ -188,7 +191,7 @@ def test_markitdown_auto_pdf_engine_falls_back_to_builtin_pdf_converter():
     )
 
     result = markitdown.convert(
-        "packages/markitdown/tests/test_files/test.pdf",
+        TEST_FILES_DIR / "test.pdf",
     )
 
     assert "AutoGen" in result.markdown
