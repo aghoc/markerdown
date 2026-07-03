@@ -76,7 +76,14 @@ https://github.com/aghoc/markerdown
 ## Attribution
 
 MarkerDown is based on MarkItDown and integrates Marker as the preferred PDF
-engine. Review the upstream projects and their licenses before redistribution or
+engine.
+
+Marker's code is GPL-3.0 licensed, and its model weights have separate model
+license terms. Because MarkerDown imports and uses Marker for the default PDF
+engine, redistribution or commercial use of MarkerDown with Marker enabled
+should be reviewed under GPL-3.0 and Marker's own licensing terms.
+
+Review the upstream projects and their licenses before redistribution or
 commercial use:
 
 - https://github.com/microsoft/markitdown
