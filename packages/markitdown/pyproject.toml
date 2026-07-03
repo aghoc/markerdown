@@ -8,13 +8,14 @@ dynamic = ["version"]
 description = 'Marker-first document converter that combines MarkItDown with Marker'
 readme = "README.md"
 requires-python = ">=3.10"
-license = "MIT"
+license = "GPL-3.0-only"
 keywords = []
 authors = [
   { name = "Adam Fourney", email = "adamfo@microsoft.com" },
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",

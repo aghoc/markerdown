@@ -248,6 +248,23 @@ MarkerDown combines two open-source projects:
 - [Datalab Marker](https://github.com/datalab-to/marker), which provides the
   PDF engine used for layout-aware PDF parsing, OCR, tables, and math.
 
+## License Notice
+
+MarkerDown combines MIT-licensed MarkItDown code with Marker integration.
+Marker's code is licensed under GPL-3.0, and its model weights have separate
+model license terms. Because MarkerDown imports and uses Marker for the default
+PDF engine, redistribution or commercial use of MarkerDown with Marker enabled
+should be reviewed under GPL-3.0 and Marker's own licensing terms.
+
+The original MarkItDown MIT license notice is retained in this repository for
+the upstream MarkItDown code. Marker is an external dependency installed through
+`marker-pdf`; see the Marker repository for its current code, model, and
+commercial licensing information:
+
+- [Marker repository](https://github.com/datalab-to/marker)
+- [Marker GPL-3.0 license](https://github.com/datalab-to/marker/blob/master/LICENSE)
+- [Marker model license](https://github.com/datalab-to/marker/blob/master/MODEL_LICENSE)
+
 ## Security Notes
 
 MarkerDown reads local files and can fetch URLs when URL conversion is used. It
@@ -257,7 +274,6 @@ trust, especially in automated or hosted environments.
 The `input/` and `output/` folders are intended for local use. Their contents are
 ignored by Git by default so private documents are not accidentally committed.
 
-## License
-
-This repository keeps the existing MarkItDown MIT license file. Marker is an
-external dependency with its own licensing terms.
+This README is not legal advice. If you plan to redistribute MarkerDown or use
+it commercially, review the upstream licenses directly and consult counsel when
+needed.
