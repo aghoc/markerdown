@@ -166,3 +166,11 @@ cython_debug/
 src/.DS_Store
 .DS_Store
 .cursorrules
+
+# Local MarkerDown conversion workspace.
+# Keep the folders in the repo, but do not commit private input documents or
+# generated Markdown outputs by accident.
+input/*
+!input/.gitkeep
+output/*
+!output/.gitkeep

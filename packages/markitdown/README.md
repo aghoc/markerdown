@@ -1,55 +1,83 @@
-# MarkItDown
+# MarkerDown
 
-> [!TIP]
-> MarkItDown is a Python package and command-line utility for converting various files to Markdown (e.g., for indexing, text analysis, etc). 
->
-> For more information, and full documentation, see the project [README.md](https://github.com/microsoft/markitdown) on GitHub.
+MarkerDown is a tuned document-to-Markdown converter that combines
+[Microsoft MarkItDown](https://github.com/microsoft/markitdown) with
+[Datalab Marker](https://github.com/datalab-to/marker).
 
-> [!IMPORTANT]
-> MarkItDown performs I/O with the privileges of the current process. Like open() or requests.get(), it will access resources that the process itself can access. Sanitize your inputs in untrusted environments, and call the narrowest `convert_*` function needed for your use case (e.g., `convert_stream()`, or `convert_local()`). See the [Security Considerations](https://github.com/microsoft/markitdown#security-considerations) section of the documentation for more information.
+It keeps MarkItDown's broad file format support and Python API while using
+Marker as the default PDF engine for better handling of complex PDF layout,
+OCR, tables, math, and equations.
+
+MarkerDown prefers GPU acceleration for Marker PDF conversion when CUDA or Apple
+Silicon MPS is available, with CPU fallback when no supported GPU backend exists.
 
 ## Installation
-
-From PyPI:
-
-```bash
-pip install markitdown[all]
-```
 
 From source:
 
 ```bash
-git clone git@github.com:microsoft/markitdown.git
-cd markitdown
-pip install -e packages/markitdown[all]
+pip install -e 'packages/markitdown[all,marker]'
 ```
 
-## Usage
+## CLI
 
-### Command-Line
+Use the MarkerDown command:
 
 ```bash
-markitdown path-to-file.pdf > document.md
+markerdown document.pdf -o document.md
 ```
 
-### Python API
+The original command is kept for compatibility:
+
+```bash
+markitdown document.pdf -o document.md
+```
+
+When run without a filename in a terminal, MarkerDown lets you choose files or
+folders from the repository root `input/` folder and writes Markdown files to
+`output/`.
+
+```bash
+markerdown
+```
+
+## PDF Strategy
+
+PDF conversion defaults to `auto` mode:
+
+1. Try Marker first.
+2. If Marker cannot run, try to install or update Marker dependencies.
+3. Retry Marker.
+4. Fall back to MarkItDown's built-in PDF converter if Marker still fails.
+
+Word, Excel, and PowerPoint continue to use MarkItDown's built-in Office
+converters.
+
+## Python API
+
+The import namespace remains compatible with MarkItDown:
 
 ```python
 from markitdown import MarkItDown
 
 md = MarkItDown()
-result = md.convert("test.xlsx")
-print(result.text_content)
+result = md.convert("document.pdf")
+print(result.markdown)
 ```
 
-### More Information
+## More Information
 
-For more information, and full documentation, see the project [README.md](https://github.com/microsoft/markitdown) on GitHub.
+See the repository README:
 
-## Trademarks
+```text
+https://github.com/aghoc/markerdown
+```
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
-trademarks or logos is subject to and must follow
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+## Attribution
+
+MarkerDown is based on MarkItDown and integrates Marker as the preferred PDF
+engine. Review the upstream projects and their licenses before redistribution or
+commercial use:
+
+- https://github.com/microsoft/markitdown
+- https://github.com/datalab-to/marker

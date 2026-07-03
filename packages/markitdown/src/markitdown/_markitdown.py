@@ -27,6 +27,7 @@ from .converters import (
     YouTubeConverter,
     IpynbConverter,
     BingSerpConverter,
+    MarkerPdfConverter,
     PdfConverter,
     DocxConverter,
     XlsxConverter,
@@ -61,6 +62,37 @@ PRIORITY_GENERIC_FILE_FORMAT = (
 
 
 _plugins: Union[None, List[Any]] = None  # If None, plugins have not been loaded yet.
+
+
+def _normalize_pdf_engine(pdf_engine: Any) -> str:
+    if pdf_engine is None:
+        pdf_engine = os.getenv("MARKITDOWN_PDF_ENGINE", "auto")
+
+    if not isinstance(pdf_engine, str):
+        raise ValueError("pdf_engine must be one of: auto, marker, builtin")
+
+    pdf_engine = pdf_engine.strip().lower()
+    if pdf_engine not in {"auto", "marker", "builtin"}:
+        raise ValueError("pdf_engine must be one of: auto, marker, builtin")
+
+    return pdf_engine
+
+
+def _normalize_marker_auto_repair(marker_auto_repair: Any) -> bool:
+    if marker_auto_repair is None:
+        marker_auto_repair = os.getenv("MARKITDOWN_MARKER_AUTO_REPAIR", "true")
+
+    if isinstance(marker_auto_repair, bool):
+        return marker_auto_repair
+
+    if isinstance(marker_auto_repair, str):
+        marker_auto_repair = marker_auto_repair.strip().lower()
+        if marker_auto_repair in {"1", "true", "yes", "on"}:
+            return True
+        if marker_auto_repair in {"0", "false", "no", "off"}:
+            return False
+
+    raise ValueError("marker_auto_repair must be a boolean value")
 
 
 def _load_plugins() -> Union[None, List[Any]]:
@@ -151,6 +183,11 @@ class MarkItDown:
             self._llm_prompt = kwargs.get("llm_prompt")
             self._exiftool_path = kwargs.get("exiftool_path")
             self._style_map = kwargs.get("style_map")
+            pdf_engine = _normalize_pdf_engine(kwargs.get("pdf_engine"))
+            marker_config = kwargs.get("marker_config")
+            marker_auto_repair = _normalize_marker_auto_repair(
+                kwargs.get("marker_auto_repair")
+            )
 
             if self._exiftool_path is None:
                 self._exiftool_path = os.getenv("EXIFTOOL_PATH")
@@ -199,7 +236,22 @@ class MarkItDown:
             self.register_converter(AudioConverter())
             self.register_converter(ImageConverter())
             self.register_converter(IpynbConverter())
-            self.register_converter(PdfConverter())
+            if pdf_engine in ("auto", "builtin"):
+                self.register_converter(PdfConverter())
+            if pdf_engine in ("auto", "marker"):
+                marker_args: Dict[str, Any] = {}
+                if marker_config is not None:
+                    marker_args["marker_config"] = marker_config
+                for kwarg_name in (
+                    "marker_artifact_dict",
+                    "marker_converter",
+                    "marker_text_from_rendered",
+                    "marker_repair_command",
+                ):
+                    if kwarg_name in kwargs:
+                        marker_args[kwarg_name] = kwargs[kwarg_name]
+                marker_args["marker_auto_repair"] = marker_auto_repair
+                self.register_converter(MarkerPdfConverter(**marker_args))
             self.register_converter(OutlookMsgConverter())
             self.register_converter(EpubConverter())
             self.register_converter(CsvConverter())
